@@ -8,26 +8,26 @@ import SignUp from "./Components/Forms/SignUp";
 
 const App = () => {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Login/>} />
-        <Route path="/signup" element={<SignUp />} />
-      </Routes>
-    </Router>
-
     // <Router>
-    //   <div className="flex">
-    //     <Sidebar/>
-    //     <div className="w-3/4 p-8">
-    //       <Routes>
-    //         {/* Add a default route */}
-    //         <Route path="/" element={<Navigate to="/account" />} />
-    //         <Route path="/account" element={<Account/>} />
-    //         <Route path="/posts" element={<Posts />} />
-    //       </Routes>
-    //     </div>
-    //   </div>
+    //   <Routes>
+    //     <Route path="/" element={<Login/>} />
+    //     <Route path="/signup" element={<SignUp />} />
+    //   </Routes>
     // </Router>
+
+    <Router>
+      <div className="flex">
+        <Sidebar/>
+        <div className="w-3/4 p-8">
+          <Routes>
+            {/* Add a default route */}
+            <Route path="/" element={<Navigate to="/account" />} />
+            <Route path="/account" element={<Account/>} />
+            <Route path="/posts" element={<Posts />} />
+          </Routes>
+        </div>
+      </div>
+    </Router>
   );
 };
 
