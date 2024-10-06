@@ -1,6 +1,7 @@
 import { FC, useEffect, useRef } from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { links } from "./Sidebar";
+import NavSearch from "./NavSearch";
 
 const NavMenu: FC<{ menuOpen: boolean; setMenuOpen: Function }> = ({
     menuOpen,
@@ -27,6 +28,9 @@ const NavMenu: FC<{ menuOpen: boolean; setMenuOpen: Function }> = ({
             className="absolute z-50 top-full right-0 w-full bg-malibu-50 overflow-hidden md:hidden border-b-8 
             border-malibu-600"
         >
+            <div className="sm:hidden mx-auto my-3 w-4/5">
+                <NavSearch />
+            </div>
             <ul className="w-full flex flex-col gap-y-2 my-5">
                 {links.map((link, index) => (
                     <li key={index}>
