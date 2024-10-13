@@ -12,14 +12,15 @@ venv/
 __pycache__/
 
 # Django specific
-*.sqlite3            # SQLite databases
-*.log                # Log files
-*.pot                # Translation template files
-*.pyc                # Compiled Python files
-*.pyo                # Optimized Python files
-*.db                 # Database files
-/media/              # Media files directory
-/static/             # Static files directory
+backend/socialmedia_dashboard/db.sqlite3
+*.log 
+*.pot 
+*.pyc 
+*.pyo 
+*.db  
+media/         
+static/
+
 
 # Coverage reports
 .coverage
