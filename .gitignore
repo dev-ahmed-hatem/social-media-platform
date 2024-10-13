@@ -1,23 +1,57 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# Node modules (optional, if you're using npm or yarn in the root)
+node_modules/
 
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
+# Environment variables
+.env
+*.env
 
-# testing
-/coverage
+# Python virtual environment
+/socialmedia-dashboard/
+venv/
+*.pyc
+__pycache__/
 
-# production
-/build
+# Django specific
+*.sqlite3            # SQLite databases
+*.log                # Log files
+*.pot                # Translation template files
+*.pyc                # Compiled Python files
+*.pyo                # Optimized Python files
+*.db                 # Database files
+/media/              # Media files directory
+/static/             # Static files directory
 
-# misc
+# Coverage reports
+.coverage
+htmlcov/
+.coverage.*
+nosetests.xml
+*.cover
+
+# Pytest
+.pytest_cache/
+pytestdebug.log
+
+# MyPy
+.mypy_cache/
+
+# Docker
+*.dockerfile
+docker-compose.override.yml
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+
+# Backup files
+*~
+*.bak
+*.swp
+
+# MacOS system files
 .DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
 
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+# Windows system files
+Thumbs.db
