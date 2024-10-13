@@ -6,6 +6,7 @@ import SignUp from "./pages/SignUp";
 import PostPage from "./pages/PostPage";
 import Account from "./pages/Account";
 import Posts from "./pages/Posts";
+import Logout from "./pages/Logout";
 
 export type TitledRouteObject = RouteObject & {
     title?: string;
@@ -23,25 +24,26 @@ export const routes: TitledRouteObject[] = [
                 path: "/account",
                 title: "account",
                 element: <Account />,
-                errorElement: <NotFound />,
             },
             {
                 path: "/my-posts",
                 title: "my posts",
                 element: <Posts type="My Posts" />,
-                errorElement: <NotFound />,
             },
             {
                 path: "/liked",
                 title: "liked posts",
                 element: <Posts type="Liked Posts" />,
-                errorElement: <NotFound />,
             },
             {
                 path: "/post",
                 title: "post",
                 element: <PostPage />,
-                errorElement: <NotFound />,
+            },
+            {
+                path: "/logout",
+                title: "logout",
+                element: <Logout />,
             },
         ],
     },
@@ -55,12 +57,6 @@ export const routes: TitledRouteObject[] = [
         path: "/signup",
         title: "signup",
         element: <SignUp />,
-        errorElement: <NotFound />,
-    },
-    {
-        path: "/logout",
-        title: "logout",
-        element: <Login />,
         errorElement: <NotFound />,
     },
 ] as TitledRouteObject[];

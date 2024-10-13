@@ -1,5 +1,4 @@
 from rest_framework import serializers
-
 from .models import User
 
 
@@ -10,7 +9,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["url", "name", "email", "phone", "is_active", "is_superuser", "password", "password2"]
+        fields = ["url", "first_name", "last_name", "email", "phone", "is_active",
+                  "picture", "is_superuser", "password", "password2"]
 
     def validate(self, attrs):
         password = attrs.get('password')
@@ -21,7 +21,12 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         password = validated_data.pop('password', None)
-        validated_data.pop('password2')
+        if password is None:
+            raise serializers.ValidationError({"password": ["Password is required"]})
+        try:
+            validated_data.pop('password2')
+        except KeyError:
+            raise serializers.ValidationError([{"password2": ["Enter password confirmation"]}])
         user = User.objects.create(**validated_data)
         user.set_password(password)
         user.save()

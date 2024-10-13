@@ -20,9 +20,11 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    name = models.CharField(max_length=255)
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=20, null=True, blank=True)
+    picture = models.ImageField(upload_to='users/pictures', null=True, blank=True)
 
     is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
@@ -32,7 +34,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     def __str__(self):
-        return self.name
+        return self.get_full_name()
+
+    def get_full_name(self):
+        return f"{self.first_name} {self.last_name}"
 
     def has_perm(self, perm, obj=None):
         if self.is_superuser:

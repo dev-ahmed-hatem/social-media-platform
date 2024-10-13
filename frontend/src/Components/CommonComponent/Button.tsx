@@ -1,27 +1,42 @@
-import React from "react";
+import React, { ReactNode } from "react";
+import { ButtonProps, Button as FlowbiteButton } from "flowbite-react";
+import { AiOutlineLoading } from "react-icons/ai";
 
-interface ButtonProps {
+interface CustomButtonProps extends ButtonProps {
     label: string;
     onClick?: (e: React.FormEvent<HTMLButtonElement>) => void;
     type?: "button" | "submit" | "reset";
     className?: string;
+    children?: ReactNode;
+    isProcessing: boolean;
 }
 
-const Button: React.FC<ButtonProps> = ({
+const Button: React.FC<CustomButtonProps> = ({
     label,
     onClick,
     type = "button",
     className = "",
+    isProcessing = false,
 }) => {
     return (
-        <button
+        <FlowbiteButton
             type={type}
             onClick={onClick}
-            className={`py-2 px-4 bg-malibu-500 text-white font-bold rounded-lg hover:bg-malibu-600
+            className={`flex justify-center px-4 bg-malibu-500 text-white font-bold rounded-lg hover:bg-malibu-600
                focus:outline-none focus:ring-4 focus:ring-malibu-300 ${className}`}
+            color="cyan"
+            isProcessing={isProcessing}
+            disabled={isProcessing}
+            processingSpinner={
+                isProcessing ? (
+                    <AiOutlineLoading className="h-6 w-6 animate-spin" />
+                ) : (
+                    <></>
+                )
+            }
         >
-            {label}
-        </button>
+            {!isProcessing && label}
+        </FlowbiteButton>
     );
 };
 

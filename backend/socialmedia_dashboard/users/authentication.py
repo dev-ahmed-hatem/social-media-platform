@@ -4,7 +4,7 @@ from rest_framework.exceptions import PermissionDenied
 
 
 def enforce_csrf(request):
-    check = CSRFCheck(get_response="")
+    check = CSRFCheck(get_response=lambda req: None)
     check.process_request(request)
     reason = check.process_view(request, None, (), {})
     if reason:

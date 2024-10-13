@@ -48,11 +48,25 @@ class LogoutView(APIView):
 
     def post(self, request):
         response = Response({"message": "user logout"})
-        response.delete_cookie("access_token")
-        response.delete_cookie("refresh_token")
+        response.delete_cookie(
+            key=SIMPLE_JWT['AUTH_COOKIE'],
+            path=SIMPLE_JWT['AUTH_COOKIE_PATH'],
+            domain=SIMPLE_JWT['AUTH_COOKIE_DOMAIN'],
+            samesite=SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
+        )
+
         return response
 
 
 class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+class IsAuthenticated(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request):
+        is_authenticated = request.user.is_authenticated
+        if is_authenticated:
+            return Response({"message": "user authenticated"})
