@@ -13,10 +13,10 @@ const axios = defaultAxios.create({
 axios.interceptors.response.use(
     (response) => response,
     async (error) => {
-        console.log(error);
         if (
             error.response.status === 401 &&
-            window.location.pathname !== "/login"
+            window.location.pathname !== "/login" &&
+            window.location.pathname !== "/signup"
         ) {
             console.log("logged out");
             window.location.href = "/login";

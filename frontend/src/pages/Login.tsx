@@ -40,10 +40,11 @@ const Login: React.FC = () => {
                 setPost(false);
             });
     };
+
     const isAuthenticated = async () => {
         const isAuthenticated = await checkAuth();
         if (isAuthenticated) {
-            navigate("/");
+            navigate("/logout");
         } else {
             setPageLoading(false);
         }
@@ -53,9 +54,9 @@ const Login: React.FC = () => {
         isAuthenticated();
     }, []);
 
-    return pageLoading ? (
-        <Loading />
-    ) : (
+    if (pageLoading) return <Loading />;
+
+    return (
         <div className="min-h-screen flex justify-center items-center">
             <div className="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
                 <h2 className="text-2xl font-bold mb-4 text-center text-malibu-500">

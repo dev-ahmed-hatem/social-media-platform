@@ -4,8 +4,8 @@ from .models import User
 
 class UserSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='users-detail', lookup_field='pk')
-    password = serializers.CharField(write_only=True, required=False)
-    password2 = serializers.CharField(write_only=True, required=False)
+    password = serializers.CharField(write_only=False, required=False)
+    password2 = serializers.CharField(write_only=False, required=False)
 
     class Meta:
         model = User
@@ -28,6 +28,15 @@ class UserSerializer(serializers.ModelSerializer):
         except KeyError:
             raise serializers.ValidationError([{"password2": ["Enter password confirmation"]}])
         user = User.objects.create(**validated_data)
+        user.is_active = True
         user.set_password(password)
         user.save()
         return user
+
+    def update(self, instance, validated_data):
+        super(UserSerializer, self).update(instance, validated_data)
+        password = validated_data.pop('password', None)
+        if password:
+            instance.set_password(password)
+            instance.save()
+        return instance

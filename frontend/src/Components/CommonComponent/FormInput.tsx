@@ -5,7 +5,7 @@ interface InputProps {
     type: string;
     name: string;
     value?: string;
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     error?: string;
     required?: boolean;
     className?: string;
@@ -29,7 +29,7 @@ const FormInput: React.ForwardRefExoticComponent<InputProps> = React.forwardRef<
         ref
     ) => {
         return (
-            <div className="flex flex-col">
+            <div className={`flex flex-col ${className}`}>
                 <input
                     type={type}
                     name={name}
@@ -41,7 +41,7 @@ const FormInput: React.ForwardRefExoticComponent<InputProps> = React.forwardRef<
                         error
                             ? "focus:ring-red-500 focus:border-red-400 border-red-400   "
                             : "focus:ring-malibu-400"
-                    } ${className}`}
+                    }`}
                     ref={ref}
                 />
                 {true && (

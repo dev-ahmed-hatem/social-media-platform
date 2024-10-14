@@ -1,47 +1,130 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React from "react";
 import FormInput from "../Components/CommonComponent/FormInput";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import Button from "../Components/CommonComponent/Button";
+import endpoints from "../api/endpoints";
+import { apiRequest, ErrorResponse } from "../api/actions";
+import Loading from "../Components/Loading";
+import { checkAuth } from "../utils";
+
+interface FormData {
+    first_name: string;
+    last_name: string;
+    email: string;
+    password: string;
+    password2: string;
+    pictures?: FileList;
+}
+
+interface SubmitData extends FormData {
+    picture?: File;
+}
 
 const SignUp: React.FC = () => {
-    const [formData, setFormData] = useState({
-        username: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-        profilePic: null as File | null,
-    });
+    const [post, setPost] = React.useState<boolean>(false);
+    const [pageLoading, setPageLoading] = React.useState<boolean>(true);
+    const [fetchError, setFetchError] = React.useState<string | null>(null);
+    const [selectedPicture, setSelectedPicture] = React.useState<File | null>(
+        null
+    );
+    const navigate = useNavigate();
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value, files } = e.target;
-        setFormData({
-            ...formData,
-            [name]: files ? files[0] : value,
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        watch,
+        setError,
+        clearErrors,
+    } = useForm<FormData>();
+
+    const password = watch("password");
+    const password2 = watch("password2");
+    const pictures = watch("pictures");
+
+    const onSubmit = (data: FormData) => {
+        if (password !== password2) {
+            setError("password2", { message: "Password doesn't match" });
+            return;
+        }
+
+        const submitData: SubmitData = data;
+        if (submitData.pictures) {
+            delete submitData["pictures"];
+        }
+        if (selectedPicture) {
+            submitData["picture"] = selectedPicture;
+        }
+
+        apiRequest({
+            method: "post",
+            endpoint: endpoints.users,
+            data: submitData,
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+            successCallback: () => {
+                apiRequest({
+                    method: "post",
+                    endpoint: endpoints.token_obtain,
+                    data: {
+                        email: data.email,
+                        password: data.password,
+                    },
+                    successCallback: () => {
+                        navigate("/");
+                    },
+                    setPost: setPost,
+                });
+            },
+            errorCallback: (error) => {
+                const errorResponse = error as ErrorResponse;
+                if (errorResponse.response?.data) {
+                    for (const errorField in errorResponse.response.data) {
+                        setError(errorField as keyof FormData, {
+                            message: errorResponse.response.data[errorField],
+                        });
+                    }
+                } else {
+                    setFetchError(errorResponse.response?.data?.detail);
+                }
+            },
+            setPost: setPost,
         });
     };
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const form = new FormData();
-        form.append("username", formData.username);
-        form.append("email", formData.email);
-        form.append("password", formData.password);
-
-        if (formData.profilePic) {
-            form.append("profilePic", formData.profilePic);
+    React.useEffect(() => {
+        if (pictures && pictures.length > 0) {
+            setSelectedPicture(pictures[0]);
         }
+    }, [pictures]);
 
-        try {
-            const response = await axios.post("/api/signup", form, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-            });
-            console.log("User registered:", response.data);
-        } catch (error) {
-            console.error("Error during sign-up:", error);
+    React.useEffect(() => {
+        if (password2) {
+            if (password !== password2) {
+                setError("password2", {
+                    message: "password doesn't match",
+                });
+            } else {
+                clearErrors("password2");
+            }
+        }
+    }, [password, password2]);
+    const isAuthenticated = async () => {
+        const isAuthenticated = await checkAuth();
+        if (isAuthenticated) {
+            navigate("/logout");
+        } else {
+            setPageLoading(false);
         }
     };
+
+    React.useEffect(() => {
+        isAuthenticated();
+    }, []);
+
+    if (pageLoading) return <Loading />;
 
     return (
         <div className="min-h-screen flex justify-center items-center bg-gray-100">
@@ -50,59 +133,72 @@ const SignUp: React.FC = () => {
                     Create Your Account
                 </h2>
 
-                <form onSubmit={handleSubmit}>
-                    <div className="grid max-md:grid-cols-1 grid-cols-2 gap-6 mb-6">
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <div className="flex flex-wrap justify-between max-md:grid-cols-1 grid-cols-2 gap-6 mb-6">
                         <FormInput
-                            placeholder="Enter your username"
+                            placeholder="First Name"
                             type="text"
-                            name="username"
-                            value={formData.username}
-                            onChange={handleChange}
-                            required
+                            className="w-full md:w-[47%]"
+                            {...register("first_name", {
+                                required: "enter your first name",
+                            })}
+                            error={errors.first_name?.message}
                         />
                         <FormInput
-                            placeholder="Enter your email"
-                            type="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            required
+                            placeholder="Last Name"
+                            type="text"
+                            className="w-full md:w-[47%]"
+                            {...register("last_name", {
+                                required: "enter your last name",
+                            })}
+                            error={errors.last_name?.message}
+                        />
+                        <FormInput
+                            placeholder="Email"
+                            type="text"
+                            className="w-full"
+                            {...register("email", {
+                                required: "enter your email",
+                                pattern: {
+                                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                    message: "Enter a valid email address",
+                                },
+                            })}
+                            error={errors.email?.message}
                         />
                     </div>
 
                     <div className="grid max-md:grid-cols-1 grid-cols-2 gap-6 mb-6">
                         <FormInput
-                            placeholder="Enter your password"
+                            placeholder="Password"
                             type="password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            required
+                            {...register("password", {
+                                required: "enter your password",
+                            })}
+                            error={errors.password?.message}
                         />
                         <FormInput
-                            placeholder="Confirm your password"
+                            placeholder="Confirm Password"
                             type="password"
-                            name="confirmPassword"
-                            value={formData.confirmPassword}
-                            onChange={handleChange}
-                            required
+                            {...register("password2", {
+                                required: "enter your password",
+                            })}
+                            error={errors.password2?.message}
                         />
                     </div>
 
                     <div className="mb-6">
                         <input
                             type="file"
-                            name="profilePic"
-                            onChange={handleChange}
                             accept="image/*"
-                            className="block w-full text-sm text-gray-500 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
+                            className="block w-full text-sm text-gray-500 border border-gray-300 rounded-lg
+                            cursor-pointer bg-gray-50 focus:outline-none"
+                            {...register("pictures")}
                         />
-                        {formData.profilePic && (
+                        {selectedPicture && (
                             <div className="mt-4">
                                 <img
-                                    src={URL.createObjectURL(
-                                        formData.profilePic
-                                    )}
+                                    src={URL.createObjectURL(selectedPicture)}
                                     alt="Profile Preview"
                                     className="w-32 h-32 rounded-full object-cover mb-4 border border-gray-300"
                                 />
@@ -110,12 +206,18 @@ const SignUp: React.FC = () => {
                         )}
                     </div>
 
-                    <button
+                    {fetchError && (
+                        <p className="font-bold text-sm text-red-600 text-center">
+                            {fetchError}
+                        </p>
+                    )}
+
+                    <Button
+                        label="Sign Up"
                         type="submit"
-                        className="w-full py-3 px-2 bg-malibu-500 text-white font-bold rounded-lg hover:bg-malibu-600 focus:outline-none focus:ring-4 focus:ring-malibu-300"
-                    >
-                        Sign Up
-                    </button>
+                        isProcessing={post}
+                        className="min-h-[41px] w-full"
+                    />
                 </form>
                 <div className="text-sm mt-2 text-gray-500 font-bold">
                     Already have account?{" "}
