@@ -5,20 +5,20 @@ import Posts from "./Posts";
 import NavBar from "../Components/NavBar";
 import People from "../Components/People";
 import Loading from "../Components/Loading";
-import axios from "../api/axiosInstance";
-import endpoints from "../api/endpoints";
+import { UserProvider } from "../providers/UserProvider";
+import { checkAuth } from "../utils";
 
 const Home = () => {
     const isHome = useMatch("/");
     const [loading, setLoading] = React.useState<boolean>(true);
     const [fetchError, setFetchError] = React.useState<boolean>(false);
-    const [isAuthenticatd, setIsAuthenticatd] = React.useState<boolean>(false);
+    const [isAuthenticated, setIsAuthenticated] =
+        React.useState<boolean>(false);
 
-    const checkAuth = () => {
-        axios
-            .get(endpoints.api_auth)
+    const getUserData = () => {
+        checkAuth()
             .then((response) => {
-                setIsAuthenticatd(true);
+                setIsAuthenticated(true);
             })
             .catch((error) => {
                 if (error.response.status !== 401) {
@@ -31,7 +31,7 @@ const Home = () => {
     };
 
     React.useEffect(() => {
-        checkAuth();
+        getUserData();
     }, []);
 
     if (loading) return <Loading />;
@@ -43,18 +43,20 @@ const Home = () => {
         );
     }
 
-    return isAuthenticatd ? (
+    return isAuthenticated ? (
         <>
-            <NavBar />
-            <div className="flex py-8 px-6 md:px-6 lg:px-10">
-                <Sidebar />
-                <div className="flex-1">
-                    {isHome ? <Posts type="Feed" /> : <Outlet />}
+            <UserProvider>
+                <NavBar />
+                <div className="flex py-8 px-6 md:px-6 lg:px-10">
+                    <Sidebar />
+                    <div className="flex-1">
+                        {isHome ? <Posts type="Feed" /> : <Outlet />}
+                    </div>
+                    <div className="max-lg:hidden">
+                        <People />
+                    </div>
                 </div>
-                <div className="max-lg:hidden">
-                    <People />
-                </div>
-            </div>
+            </UserProvider>
         </>
     ) : (
         <Navigate to={"/"} />

@@ -20,7 +20,7 @@ const Post: React.FC<PostData> = ({ url, caption, date, owner, picture }) => {
             )}
             <h2 className="text-xl font-semibold flex gap-x-2 items-center">
                 <img src={owner.picture} alt="" className="size-8" />
-                <span>{owner.name}</span>
+                <span>{owner.full_name}</span>
             </h2>
             <span className="inline-block text-sm ms-10 text-gray-400">
                 {date}

@@ -12,6 +12,7 @@ interface FormData {
     first_name: string;
     last_name: string;
     email: string;
+    phone: string
     password: string;
     password2: string;
     pictures?: FileList;
@@ -23,6 +24,7 @@ interface SubmitData extends FormData {
 
 const SignUp: React.FC = () => {
     const [post, setPost] = React.useState<boolean>(false);
+    const [disabled, setDisabled] = React.useState<boolean>(false);
     const [pageLoading, setPageLoading] = React.useState<boolean>(true);
     const [fetchError, setFetchError] = React.useState<string | null>(null);
     const [selectedPicture, setSelectedPicture] = React.useState<File | null>(
@@ -65,6 +67,7 @@ const SignUp: React.FC = () => {
                 "Content-Type": "multipart/form-data",
             },
             successCallback: () => {
+                // login after user creation
                 apiRequest({
                     method: "post",
                     endpoint: endpoints.token_obtain,
@@ -75,7 +78,7 @@ const SignUp: React.FC = () => {
                     successCallback: () => {
                         navigate("/");
                     },
-                    setPost: setPost,
+                    setPost: setDisabled,
                 });
             },
             errorCallback: (error) => {
@@ -97,6 +100,8 @@ const SignUp: React.FC = () => {
     React.useEffect(() => {
         if (pictures && pictures.length > 0) {
             setSelectedPicture(pictures[0]);
+        } else {
+            setSelectedPicture(null);
         }
     }, [pictures]);
 
@@ -166,6 +171,18 @@ const SignUp: React.FC = () => {
                             })}
                             error={errors.email?.message}
                         />
+                        <FormInput
+                            placeholder="Phone"
+                            type="text"
+                            className="w-full"
+                            {...register("phone", {
+                                pattern: {
+                                    value: /^[0-9]+$/,
+                                    message: "Enter a valid phone number",
+                                },
+                            })}
+                            error={errors.phone?.message}
+                        />
                     </div>
 
                     <div className="grid max-md:grid-cols-1 grid-cols-2 gap-6 mb-6">
@@ -215,7 +232,7 @@ const SignUp: React.FC = () => {
                     <Button
                         label="Sign Up"
                         type="submit"
-                        isProcessing={post}
+                        isProcessing={post || disabled}
                         className="min-h-[41px] w-full"
                     />
                 </form>

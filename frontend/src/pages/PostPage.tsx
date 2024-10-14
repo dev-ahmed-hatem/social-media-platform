@@ -5,8 +5,14 @@ import Comment from "../Components/Comment";
 import AddComment from "../Components/AddComment";
 
 const user: User = {
-    name: "Ahmed Hatem",
-    picture: "/logo512.png",
+    url: "http://127.0.0.1:8000/api/users/users/1/",
+    first_name: "Ahmed",
+    last_name: "Hatem",
+    email: "ahmed@a.com",
+    phone: "",
+    is_active: true,
+    picture: "http://127.0.0.1:8000/media/users/pictures/logo512.png",
+    full_name: "Ahmed Hatem",
 };
 
 const PostPage = () => {

@@ -2,10 +2,46 @@ import React from "react";
 import { type User } from "../types/users";
 
 const people: User[] = [
-    { name: "Person 1", picture: "logo512.png" },
-    { name: "Person 2", picture: "logo512.png" },
-    { name: "Person 3", picture: "logo512.png" },
-    { name: "Person 4", picture: "logo512.png" },
+    {
+        url: "http://127.0.0.1:8000/api/users/users/1/",
+        first_name: "Ahmed",
+        last_name: "Hatem",
+        email: "ahmed@a.com",
+        phone: "",
+        is_active: true,
+        picture: "http://127.0.0.1:8000/media/users/pictures/logo512.png",
+        full_name: "Ahmed Hatem",
+    },
+    {
+        url: "http://127.0.0.1:8000/api/users/users/1/",
+        first_name: "Ahmed",
+        last_name: "Hatem",
+        email: "ahmed@a.com",
+        phone: "",
+        is_active: true,
+        picture: "http://127.0.0.1:8000/media/users/pictures/logo512.png",
+        full_name: "Ahmed Hatem",
+    },
+    {
+        url: "http://127.0.0.1:8000/api/users/users/1/",
+        first_name: "Ahmed",
+        last_name: "Hatem",
+        email: "ahmed@a.com",
+        phone: "",
+        is_active: true,
+        picture: "http://127.0.0.1:8000/media/users/pictures/logo512.png",
+        full_name: "Ahmed Hatem",
+    },
+    {
+        url: "http://127.0.0.1:8000/api/users/users/1/",
+        first_name: "Ahmed",
+        last_name: "Hatem",
+        email: "ahmed@a.com",
+        phone: "",
+        is_active: true,
+        picture: "http://127.0.0.1:8000/media/users/pictures/logo512.png",
+        full_name: "Ahmed Hatem",
+    },
 ];
 
 const People = () => {
@@ -16,12 +52,20 @@ const People = () => {
                 {people.map((person, index) => (
                     <div key={index} className="flex gap-x-2 items-center">
                         <div className="img">
-                            <img src={person.picture} alt={person.name} className="size-10 rounded-full" />
+                            <img
+                                src={person.picture}
+                                alt={person.full_name}
+                                className="size-10 rounded-full"
+                            />
                         </div>
                         <div className="name">
-                            <span className="font-bold">{person.name}</span>
+                            <span className="font-bold">
+                                {person.full_name}
+                            </span>
                             <br />
-                            <span className="text-sm text-gray-400">1 mutual friend</span>
+                            <span className="text-sm text-gray-400">
+                                1 mutual friend
+                            </span>
                         </div>
                     </div>
                 ))}

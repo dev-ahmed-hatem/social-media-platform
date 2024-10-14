@@ -3,6 +3,7 @@ import Button from "../Components/CommonComponent/Button";
 import axios from "../api/axiosInstance";
 import endpoints from "../api/endpoints";
 import { useNavigate } from "react-router-dom";
+import { logout } from "../utils";
 
 const Logout = () => {
     const [post, setPost] = React.useState<boolean>(false);
@@ -12,9 +13,8 @@ const Logout = () => {
     const handleLogout = () => {
         setPost(true);
         setFetchError(null);
-        axios
-            .post(endpoints.logout, {})
-            .then((response) => {
+        logout()
+            .then(() => {
                 navigate("/login");
             })
             .catch((error) => {

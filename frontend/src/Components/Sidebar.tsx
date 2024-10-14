@@ -5,6 +5,7 @@ import { GoHomeFill } from "react-icons/go";
 import { BsPostcardHeartFill } from "react-icons/bs";
 import { AiFillLike } from "react-icons/ai";
 import { IoLogOut } from "react-icons/io5";
+import useUser from "../providers/UserProvider";
 
 export const links = [
     {
@@ -36,16 +37,18 @@ export const links = [
 
 const Sidebar: React.FC = () => {
     const location = useLocation();
+    const {user} = useUser()
     return (
         <div className="sticky top-10 w-64 h-full bg-malibu-50 py-16 shadow-md max-md:hidden">
             <div className="flex flex-col items-center">
                 <img
-                    src="./logo512.png"
+                    src={user?.picture?? "./user.jpg"}
                     alt="profile picture"
-                    className="w-28 h-28 rounded-full mb-5 border-2 border-malibu-500 flex justify-center items-center"
+                    className="w-28 h-28 rounded-full mb-5 border-2 border-malibu-500 flex justify-center
+                     object-cover items-center"
                 />
                 <h3 className="text-2xl font-bold text-primary-900">
-                    Asmaa Sharaf
+                    {user?.full_name}
                 </h3>
             </div>
 

@@ -1,4 +1,10 @@
 export type User = {
-    name: string;
-    picture: string;
+    url: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+    phone?: string;
+    is_active: boolean;
+    picture?: string;
+    full_name: string;
 };

@@ -24,7 +24,7 @@ class UserAuthentication(JWTAuthentication):
 
         validated_token = self.get_validated_token(raw_token)
 
-        if "access_token" in request.COOKIES:
-            enforce_csrf(request)
+        # if "access_token" in request.COOKIES:
+        #     enforce_csrf(request)
 
         return self.get_user(validated_token), raw_token

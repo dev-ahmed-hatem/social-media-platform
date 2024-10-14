@@ -1,7 +1,7 @@
-from .serializers import UserSerializer
+from .serializers import UserSerializer, ChangePasswordSerializer
 from .models import User
 from rest_framework.viewsets import ModelViewSet
-from rest_framework import permissions
+from rest_framework import permissions, status
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
@@ -58,6 +58,16 @@ class LogoutView(APIView):
         return response
 
 
+class IsAuthenticated(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request):
+        is_authenticated = request.user.is_authenticated
+        if is_authenticated:
+            user_serialized = UserSerializer(request.user, context={"request": request}).data
+            return Response(user_serialized, status=status.HTTP_200_OK)
+
+
 class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -70,10 +80,15 @@ class UserViewSet(ModelViewSet):
         return [permission() for permission in permission_classes]
 
 
-class IsAuthenticated(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
+class ChangePasswordView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
 
-    def get(self, request):
-        is_authenticated = request.user.is_authenticated
-        if is_authenticated:
-            return Response({"message": "user authenticated"})
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        serializer = ChangePasswordSerializer(data=request.data, context={'request': request})
+
+        if serializer.is_valid():
+            user.set_password(serializer.validated_data['new_password'])
+            user.save()
+            return Response({"message": "Password updated successfully"}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

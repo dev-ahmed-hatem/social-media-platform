@@ -4,13 +4,14 @@ from .models import User
 
 class UserSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='users-detail', lookup_field='pk')
-    password = serializers.CharField(write_only=False, required=False)
-    password2 = serializers.CharField(write_only=False, required=False)
+    password = serializers.CharField(write_only=True, required=False)
+    password2 = serializers.CharField(write_only=True, required=False)
+    full_name = serializers.SerializerMethodField()
 
     class Meta:
         model = User
         fields = ["url", "first_name", "last_name", "email", "phone", "is_active",
-                  "picture", "is_superuser", "password", "password2"]
+                  "picture", "password", "password2", "full_name"]
 
     def validate(self, attrs):
         password = attrs.get('password')
@@ -40,3 +41,27 @@ class UserSerializer(serializers.ModelSerializer):
             instance.set_password(password)
             instance.save()
         return instance
+
+    def get_full_name(self, obj):
+        return obj.get_full_name()
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    current_password = serializers.CharField(required=True, write_only=True)
+    new_password = serializers.CharField(required=True, write_only=True)
+    confirm_new_password = serializers.CharField(required=True, write_only=True)
+
+    def validate(self, attrs):
+        new_password = attrs.get('new_password')
+        confirm_new_password = attrs.get('confirm_new_password')
+
+        if new_password != confirm_new_password:
+            raise serializers.ValidationError({"confirm_new_password": "Passwords do not match."})
+
+        return attrs
+
+    def validate_current_password(self, value):
+        user = self.context['request'].user
+        if not user.check_password(value):
+            raise serializers.ValidationError("Current password is incorrect.")
+        return value

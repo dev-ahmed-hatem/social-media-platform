@@ -22,7 +22,7 @@ const Button: React.FC<CustomButtonProps> = ({
         <FlowbiteButton
             type={type}
             onClick={onClick}
-            className={`flex justify-center px-4 bg-malibu-500 text-white font-bold rounded-lg hover:bg-malibu-600
+            className={`flex justify-center px-4 bg-malibu-500 text-white font-bold rounded-md hover:bg-malibu-600
                focus:outline-none focus:ring-4 focus:ring-malibu-300 ${className}`}
             color="cyan"
             isProcessing={isProcessing}

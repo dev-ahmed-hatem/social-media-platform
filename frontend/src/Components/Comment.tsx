@@ -9,12 +9,12 @@ const Comment: React.FC<CommentData> = ({ content, date, owner }) => {
                 <div className="img">
                     <img
                         src={owner.picture}
-                        alt={owner.name}
+                        alt={owner.full_name}
                         className="size-10 rounded-full"
                     />
                 </div>
                 <div className="name">
-                    <span className="font-bold">{owner.name}</span>
+                    <span className="font-bold">{owner.full_name}</span>
                     <br />
                     <span className="text-sm text-gray-400">{date}</span>
                 </div>
