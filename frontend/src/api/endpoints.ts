@@ -9,6 +9,11 @@ const endpoints = {
     // users
     users: `${api_base_url}api/users/users/`,
     change_password: `${api_base_url}api/users/change-password/`,
+    
+    //posts
+    posts: `${api_base_url}api/posts/posts/`,
+    post_data: `${api_base_url}api/posts/post-data/`,
+    comments: `${api_base_url}api/posts/comments/`,
 };
 
 export default endpoints;

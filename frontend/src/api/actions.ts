@@ -16,8 +16,8 @@ interface ApiRequestParams<T> {
     endpoint: string;
     data?: T;
     headers?: {};
-    successCallback?: <R>(response?: R) => void;
-    errorCallback?: <E>(error?: E) => void;
+    successCallback?: (response?: AxiosResponse) => void;
+    errorCallback?: (error: ErrorResponse) => void;
     finalCallback?: () => void;
     setPost?: (loading: boolean) => void;
 }
@@ -40,9 +40,9 @@ export const apiRequest = async <T>({
             data: method !== "get" ? data : undefined,
             headers: headers,
         });
-        if (successCallback) successCallback<AxiosResponse>(response);
+        if (successCallback) successCallback(response);
     } catch (error) {
-        if (errorCallback) errorCallback<AxiosError>(error as AxiosError);
+        if (errorCallback) errorCallback(error as ErrorResponse);
     } finally {
         if (setPost) setPost(false);
         if (finalCallback) finalCallback();

@@ -7,6 +7,7 @@ import People from "../Components/People";
 import Loading from "../Components/Loading";
 import { UserProvider } from "../providers/UserProvider";
 import { checkAuth } from "../utils";
+import { NotificationProvider } from "../providers/NotificationProvider";
 
 const Home = () => {
     const isHome = useMatch("/");
@@ -46,16 +47,18 @@ const Home = () => {
     return isAuthenticated ? (
         <>
             <UserProvider>
-                <NavBar />
-                <div className="flex py-8 px-6 md:px-6 lg:px-10">
-                    <Sidebar />
-                    <div className="flex-1">
-                        {isHome ? <Posts type="Feed" /> : <Outlet />}
+                <NotificationProvider>
+                    <NavBar />
+                    <div className="flex py-8 px-6 md:px-6 lg:px-10">
+                        <Sidebar />
+                        <div className="flex-1">
+                            {isHome ? <Posts type="Feed" /> : <Outlet />}
+                        </div>
+                        <div className="max-lg:hidden">
+                            <People />
+                        </div>
                     </div>
-                    <div className="max-lg:hidden">
-                        <People />
-                    </div>
-                </div>
+                </NotificationProvider>
             </UserProvider>
         </>
     ) : (

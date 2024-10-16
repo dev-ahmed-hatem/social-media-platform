@@ -36,7 +36,7 @@ export const routes: TitledRouteObject[] = [
                 element: <Posts type="Liked Posts" />,
             },
             {
-                path: "/post",
+                path: "/post/:postId",
                 title: "post",
                 element: <PostPage />,
             },

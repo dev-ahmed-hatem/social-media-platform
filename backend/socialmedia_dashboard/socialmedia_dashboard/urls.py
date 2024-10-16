@@ -9,6 +9,7 @@ from users.views import UserTokenObtainPairView, LogoutView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/users/', include('users.urls')),
+    path('api/posts/', include('posts.urls')),
     path('api/token/', UserTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/logout/', LogoutView.as_view(), name='logout'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

@@ -9,7 +9,7 @@ const UserIcon = () => {
                 src={user?.picture ?? "./user.jpg"}
                 alt=""
                 className="size-10 border-2 border-malibu-400 rounded-full p-1 cursor-pointer
-                hover:shadow-md"
+                hover:shadow-md object-cover"
             />
         </div>
     );

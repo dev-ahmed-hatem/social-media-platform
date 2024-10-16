@@ -82,7 +82,7 @@ const Account = () => {
     }, [pictures]);
 
     return (
-        <div className="md:px-10 lg:w-4/5">
+        <div className="md:px-10 max-w-[650px] lg:w-full">
             <h1 className="text-3xl font-bold mb-3">My Account</h1>
             <br />
 
